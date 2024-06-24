@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getActorDetails, getActorMovies } from "../api/api";
+import "./ActorDetailPage.css";
 
 const ActorDetailPage = () => {
   const { id } = useParams();

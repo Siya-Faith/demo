@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getPopularActors } from "../api/api";
+import "./ActorsPage.css";
 
 const ActorsPage = () => {
   const [actors, setActors] = useState([]);

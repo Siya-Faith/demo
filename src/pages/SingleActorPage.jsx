@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getActorDetails, getActorMovieCredits } from "../api/api";
+import "./SingleActorPage.css";
 
 const SingleActorPage = () => {
   const { id } = useParams();
@@ -68,3 +69,4 @@ const SingleActorPage = () => {
 };
 
 export default SingleActorPage;
+  
