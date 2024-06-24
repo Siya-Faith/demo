@@ -1,48 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import axios from "axios";
-
-const API_KEY = "97c204639834731548cd02865e77ea25";
-const API_BASEURL = "https://api.themoviedb.org/3";
+import { getMovieDetails, getMovieTrailer } from "../api/api";
 
 const SingleMoviePage = () => {
   const { id } = useParams();
   const [movie, setMovie] = useState(null);
-  const [credits, setCredits] = useState(null);
   const [trailer, setTrailer] = useState(null);
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
       try {
-        const movieResponse = await axios.get(`${API_BASEURL}/movie/${id}`, {
-          params: {
-            api_key: API_KEY,
-          },
-        });
+        const movieResponse = await getMovieDetails(id);
         setMovie(movieResponse.data);
 
-        const creditsResponse = await axios.get(
-          `${API_BASEURL}/movie/${id}/credits`,
-          {
-            params: {
-              api_key: API_KEY,
-            },
-          }
+        const trailerResponse = await getMovieTrailer(id);
+        const trailerData = trailerResponse.data.results.find(
+          (video) => video.type === "Trailer"
         );
-        setCredits(creditsResponse.data);
-
-        const videosResponse = await axios.get(
-          `${API_BASEURL}/movie/${id}/videos`,
-          {
-            params: {
-              api_key: API_KEY,
-            },
-          }
-        );
-        const trailerVideo = videosResponse.data.results.find(
-          (video) => video.type === "Trailer" && video.site === "YouTube"
-        );
-        setTrailer(trailerVideo);
+        setTrailer(trailerData);
       } catch (error) {
         console.error("Error fetching movie details:", error);
       }
@@ -51,26 +26,21 @@ const SingleMoviePage = () => {
     fetchMovieDetails();
   }, [id]);
 
-  if (!movie) return <div>Loading...</div>;
-
-  const director = credits?.crew.find((member) => member.job === "Director");
-  const leadActors = credits?.cast.slice(0, 5); // Get the top 5 lead actors
+  if (!movie) return <div className="loading">Loading...</div>;
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-5">{movie.title}</h1>
-      <div className="mb-5">
+    <div className="container">
+      <h1 className="movie-title">{movie.title}</h1>
+      <div className="movie-poster">
         <img
           src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
           alt={movie.title}
-          className="w-full h-96 object-cover rounded"
+          className="poster-image"
         />
       </div>
       {trailer && (
-        <div className="mb-5">
+        <div className="movie-trailer">
           <iframe
-            width="100%"
-            height="400"
             src={`https://www.youtube.com/embed/${trailer.key}`}
             title={trailer.name}
             frameBorder="0"
@@ -79,29 +49,29 @@ const SingleMoviePage = () => {
           ></iframe>
         </div>
       )}
-      <p className="text-gray-700 mb-2">Rating: {movie.vote_average}</p>
-      <p className="text-gray-700 mb-2">Length: {movie.runtime} minutes</p>
-      {director && (
-        <p className="text-gray-700 mb-2">Director: {director.name}</p>
-      )}
-      <h2 className="text-2xl font-bold mb-4">Lead Actors</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {leadActors?.map((actor) => (
-          <div key={actor.id} className="bg-white rounded shadow-lg p-4">
+      <div className="movie-details">
+        <p><strong>Rating:</strong> {movie.vote_average}</p>
+        <p><strong>Length:</strong> {movie.runtime} minutes</p>
+        {movie.credits && movie.credits.crew && (
+          <p><strong>Director:</strong> {movie.credits.crew.find((member) => member.job === "Director")?.name}</p>
+        )}
+      </div>
+      <h2 className="lead-actors-title">Lead Actors</h2>
+      <div className="lead-actors">
+        {movie.credits && movie.credits.cast && movie.credits.cast.map((actor) => (
+          <div key={actor.id} className="actor-card">
             <Link to={`/actor/${actor.id}`}>
               {actor.profile_path ? (
                 <img
                   src={`https://image.tmdb.org/t/p/w500${actor.profile_path}`}
                   alt={actor.name}
-                  className="w-full h-64 object-cover rounded mb-4"
+                  className="actor-image"
                 />
               ) : (
-                <div className="w-full h-64 bg-gray-300 flex items-center justify-center mb-4">
-                  <span>No Image</span>
-                </div>
+                <div className="no-image">No Image</div>
               )}
-              <h3 className="text-xl font-bold mb-2">{actor.name}</h3>
-              <p className="text-gray-700">as {actor.character}</p>
+              <h3 className="actor-name">{actor.name}</h3>
+              <p className="actor-character">as {actor.character}</p>
             </Link>
           </div>
         ))}

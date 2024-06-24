@@ -1,8 +1,9 @@
-// src/api/movieApi.js
+// src/api/api.js
 import axios from "axios";
-import { API_KEY, BASE_URL } from "./ApiConfig";
 
-// Create an instance of axios with default parameters
+const API_KEY = "97c204639834731548cd02865e77ea25";
+const BASE_URL = "https://api.themoviedb.org/3";
+
 const apiClient = axios.create({
   baseURL: BASE_URL,
   params: {
@@ -10,10 +11,8 @@ const apiClient = axios.create({
   },
 });
 
-// Get movies by category (e.g., 'top_rated', 'popular', 'now_playing', 'upcoming')
 const getMovies = (category) => apiClient.get(`/movie/${category}`);
 
-// Get details of a single movie
 const getMovieDetails = (id) =>
   apiClient.get(`/movie/${id}`, {
     params: {
@@ -21,22 +20,16 @@ const getMovieDetails = (id) =>
     },
   });
 
-// Get credits (cast and crew) of a movie
 const getMovieCredits = (id) => apiClient.get(`/movie/${id}/credits`);
 
-// Get related movies
 const getRelatedMovies = (id) => apiClient.get(`/movie/${id}/similar`);
 
-// Get movie trailer
 const getMovieTrailer = (id) => apiClient.get(`/movie/${id}/videos`);
 
-// Get genres
 const getGenres = () => apiClient.get("/genre/movie/list");
 
-// Get popular actors
 const getPopularActors = () => apiClient.get("/person/popular");
 
-// Search for movies
 const searchMovies = (query) =>
   apiClient.get("/search/movie", {
     params: {
@@ -44,7 +37,6 @@ const searchMovies = (query) =>
     },
   });
 
-// Search for actors
 const searchActors = (query) =>
   apiClient.get("/search/person", {
     params: {
@@ -52,13 +44,10 @@ const searchActors = (query) =>
     },
   });
 
-// Get details of a single actor
 const getActorDetails = (id) => apiClient.get(`/person/${id}`);
 
-// Fetch movies actor participated in
 const getActorMovies = (id) => apiClient.get(`/person/${id}/movie_credits`);
 
-// Get movie credits of a single actor
 const getActorMovieCredits = (id) =>
   apiClient.get(`/person/${id}/movie_credits`);
 

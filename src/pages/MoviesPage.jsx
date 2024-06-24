@@ -1,9 +1,7 @@
-// src/pages/MoviesPage.jsx
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { getMovies, getGenres } from "../api/MovieApI";
+import { getMovies, getGenres } from "../api/api";
 import MovieList from "../components/MovieList";
-
 
 const MoviesPage = () => {
   const [movies, setMovies] = useState([]);
@@ -11,8 +9,7 @@ const MoviesPage = () => {
   const [genreName, setGenreName] = useState("");
   const location = useLocation();
 
-  const category =
-    new URLSearchParams(location.search).get("category") || "popular";
+  const category = new URLSearchParams(location.search).get("category") || "popular";
   const genreId = new URLSearchParams(location.search).get("genre");
 
   useEffect(() => {
@@ -46,14 +43,12 @@ const MoviesPage = () => {
   }, [category, genreId]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="loading">Loading...</div>;
   }
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-5">
-        Movies - {genreId ? genreName : category.replace("_", " ")}
-      </h1>
+    <div className="container">
+      <h1 className="page-title">Movies - {genreId ? genreName : category.replace("_", " ")}</h1>
       <MovieList movies={movies} />
     </div>
   );

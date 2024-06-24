@@ -1,122 +1,46 @@
-
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import MovieList from "../components/MovieList";
-import { getMovies } from "../api/MovieApI";
-import './HomePage';
-
-const category = {
-  movie: "movie",
-  tv: "tv",
-};
-
-const movieType = {
-  popular: "popular",
-  top_rated: "top_rated",
-};
-
-const tvType = {
-  popular: "popular",
-  top_rated: "top_rated",
-};
+import { getMovies } from "../api/api";
 
 const HomePage = () => {
-  const [trendingMovies, setTrendingMovies] = useState([]);
-  const [topRatedMovies, setTopRatedMovies] = useState([]);
-  const [trendingTV, setTrendingTV] = useState([]);
-  const [topRatedTV, setTopRatedTV] = useState([]);
+  const [movies, setMovies] = useState([]);
 
   useEffect(() => {
-    const fetchTrendingMovies = async () => {
+    const fetchMovies = async () => {
       try {
-        const response = await getMovies(
-          `${category.movie}/${movieType.popular}`
-        );
-        setTrendingMovies(response.data.results || []);
+        const response = await getMovies("popular");
+        setMovies(response.data.results);
       } catch (error) {
-        console.error("Error fetching trending movies:", error);
+        console.error("Error fetching movies:", error);
       }
     };
 
-    const fetchTopRatedMovies = async () => {
-      try {
-        const response = await getMovies(
-          `${category.movie}/${movieType.top_rated}`
-        );
-        setTopRatedMovies(response.data.results || []);
-      } catch (error) {
-        console.error("Error fetching top rated movies:", error);
-      }
-    };
-
-    const fetchTrendingTV = async () => {
-      try {
-        const response = await getMovies(`${category.tv}/${tvType.popular}`);
-        setTrendingTV(response.data.results || []);
-      } catch (error) {
-        console.error("Error fetching trending TV shows:", error);
-      }
-    };
-
-    const fetchTopRatedTV = async () => {
-      try {
-        const response = await getMovies(`${category.tv}/${tvType.top_rated}`);
-        setTopRatedTV(response.data.results || []);
-      } catch (error) {
-        console.error("Error fetching top rated TV shows:", error);
-      }
-    };
-
-    fetchTrendingMovies();
-    fetchTopRatedMovies();
-    fetchTrendingTV();
-    fetchTopRatedTV();
+    fetchMovies();
   }, []);
 
   return (
     <div className="container">
-      <div className="section mb-3">
-        <div className="section__header mb-2">
-          <h2>Trending Movies</h2>
-          <Link to="/movie" className="small">
-            View more
-          </Link>
-        </div>
-        <MovieList movies={trendingMovies} />
-      </div>
-
-      <div className="section mb-3">
-        <div className="section__header mb-2">
-          <h2>Top Rated Movies</h2>
-          <Link to="/movie" className="small">
-            View more
-          </Link>
-        </div>
-        <MovieList movies={topRatedMovies} />
-      </div>
-
-      <div className="section mb-3">
-        <div className="section__header mb-2">
-          <h2>Trending TV</h2>
-          <Link to="/tv" className="small">
-            View more
-          </Link>
-        </div>
-        <MovieList movies={trendingTV} />
-      </div>
-
-      <div className="section mb-3">
-        <div className="section__header mb-2">
-          <h2>Top Rated TV</h2>
-          <Link to="/tv" className="small">
-            View more
-          </Link>
-        </div>
-        <MovieList movies={topRatedTV} />
+      <h1 className="page-title">Popular Movies</h1>
+      <div className="movies-grid">
+        {movies.map((movie) => (
+          <div key={movie.id} className="movie-card">
+            <Link to={`/movie/${movie.id}`}>
+              {movie.poster_path ? (
+                <img
+                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                  alt={movie.title}
+                  className="movie-image"
+                />
+              ) : (
+                <div className="no-image">No Image</div>
+              )}
+              <h3 className="movie-title">{movie.title}</h3>
+            </Link>
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
 export default HomePage;
-

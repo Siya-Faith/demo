@@ -10,6 +10,8 @@ import Navbar from "./components/NavBar";
 import Footer from "./components/Footer";
 import SearchResults from "./components/SearchResults";
 import ActorDetailPage from "./pages/ActorDetailPage";
+import './App.css';
+
 
 const App = () => {
   return (
