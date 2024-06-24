@@ -5,6 +5,7 @@ import HomePage from "./pages/HomePage";
 import MoviesPage from "./pages/MoviesPage";
 import ActorsPage from "./pages/ActorsPage";
 import ActorDetailPage from "./pages/ActorDetailPage";
+import SearchBox from "./components/SearchBox";
 import "./App.css";
 
 const App = () => {
@@ -12,14 +13,18 @@ const App = () => {
     <Router>
       <div className="app">
         <Sidebar />
-        <div className="content">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/popular" element={<MoviesPage />} />
-            <Route path="/movies" element={<MoviesPage />} />
-            <Route path="/actors" element={<ActorsPage />} />
-            <Route path="/actor/:id" element={<ActorDetailPage />} />
-          </Routes>
+        <div className="main-content">
+          <SearchBox />
+          <div className="content">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/popular" element={<MoviesPage />} />
+              <Route path="/movies" element={<MoviesPage />} />
+              <Route path="/actors" element={<ActorsPage />} />
+              <Route path="/actor/:id" element={<ActorDetailPage />} />
+              <Route path="/search" element={<MoviesPage />} />
+            </Routes>
+          </div>
         </div>
       </div>
     </Router>
